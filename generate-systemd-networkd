@@ -1,0 +1,31 @@
+#!/bin/bash
+#
+# generate-systemd-networkd: Script para generar el fichero /etc/netplan/01-systemd-networkd.yaml
+# y aplicar la configuración habilitando WOL
+#
+# Esteban M. Navas <algodelinux@gmail.com>
+# Fecha creación:      03/10/2018
+# Última modificación: 04/10/2018
+
+ip link show up|grep ^[0-9]| grep -v lo|cut -f2 -d":"|sed 's/^[ \t]*//' > /tmp/INTERFACES
+
+[ -s /tmp/INTERFACES ] && echo "network:
+  version: 2
+  renderer: networkd
+  ethernets:" > /etc/netplan/01-systemd-networkd.yaml
+
+while read INTERFACE; do
+
+MACADDRESS=$(ip link show $INTERFACE| grep 'link/ether' | sed 's/^[ \t]*//' | cut -f2 -d" ")
+
+echo "    $INTERFACE:
+      dhcp4: yes
+      dhcp6: no
+      match:
+        macaddress: $MACADDRESS
+      wakeonlan: true
+      optional: true">> /etc/netplan/01-systemd-networkd.yaml
+
+done < /tmp/INTERFACES
+
+netplan apply
