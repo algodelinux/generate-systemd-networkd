@@ -7,7 +7,7 @@
 # Fecha creación:      03/10/2018
 # Última modificación: 04/10/2018
 
-ip link show up|grep ^[0-9]| grep -v lo|cut -f2 -d":"|sed 's/^[ \t]*//' > /tmp/INTERFACES
+ip link show up | grep ^[0-9] | grep -v lo | cut -f2 -d":" | sed 's/^[ \t]*//' | grep -v 'wl' > /tmp/INTERFACES
 
 [ -s /tmp/INTERFACES ] && echo "network:
   version: 2
