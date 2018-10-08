@@ -17,7 +17,6 @@ echo "network:
   version: 2
   renderer: networkd
   ethernets:" > /etc/netplan/01-systemd-networkd.yaml
-fi
 
 while read INTERFACE; do
 
@@ -34,3 +33,5 @@ echo "    $INTERFACE:
 done < /tmp/INTERFACES
 
 netplan apply
+
+fi
