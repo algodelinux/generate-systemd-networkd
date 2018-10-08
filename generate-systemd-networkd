@@ -5,14 +5,19 @@
 #
 # Esteban M. Navas <algodelinux@gmail.com>
 # Fecha creación:      03/10/2018
-# Última modificación: 04/10/2018
+# Última modificación: 08/10/2018
 
 ip link show up | grep ^[0-9] | grep -v lo | cut -f2 -d":" | sed 's/^[ \t]*//' | grep -v 'wl' > /tmp/INTERFACES
 
-[ -s /tmp/INTERFACES ] && echo "network:
+if [ -s /tmp/INTERFACES ]; then
+
+rm -f /etc/netplan/*
+
+echo "network:
   version: 2
   renderer: networkd
   ethernets:" > /etc/netplan/01-systemd-networkd.yaml
+fi
 
 while read INTERFACE; do
 
